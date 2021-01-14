@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
         urlPatterns = {"/LoginServlet"},
         initParams = {
             @WebInitParam(name = "user", value =  "Amann"),
-            @WebInitParam(name = "password", value = "Capgemini")
+            @WebInitParam(name = "password", value = "Aman123@")
         }
 )
 public class LoginServlet extends HttpServlet {
@@ -27,6 +27,7 @@ public class LoginServlet extends HttpServlet {
         String userID = getServletConfig().getInitParameter("user");
         String password = getServletConfig().getInitParameter("password");
         String userIdRegex = "^[A-Z]{1}[a-z]{2,}$";
+        String passRegex = "^(?=.*[0-9])(?=.*[A-Z])(?=.[@*#&$]).{8,}$";
         if (userID.equals(user) && password.equals(pwd)) {
             request.setAttribute("user", user);
             request.getRequestDispatcher("LoginSuccess.jsp").forward(request, response);
@@ -34,6 +35,11 @@ public class LoginServlet extends HttpServlet {
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
             PrintWriter out = response.getWriter();
             out.println("<font color=red>User id is not proper. Please enter valid user id.</font>");
+            rd.include(request, response);
+        } else if (!Pattern.matches(passRegex, password)) {
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+            PrintWriter out = response.getWriter();
+            out.println("<font color=red>Password is not proper. Please enter valid password.</font>");
             rd.include(request, response);
         } else {
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
