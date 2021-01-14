@@ -9,12 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Pattern;
 
 @WebServlet (
     description = "Login ServLet Testing",
         urlPatterns = {"/LoginServlet"},
         initParams = {
-            @WebInitParam(name = "user", value =  "Aman"),
+            @WebInitParam(name = "user", value =  "Amann"),
             @WebInitParam(name = "password", value = "Capgemini")
         }
 )
@@ -25,9 +26,15 @@ public class LoginServlet extends HttpServlet {
         String pwd = request.getParameter("pwd");
         String userID = getServletConfig().getInitParameter("user");
         String password = getServletConfig().getInitParameter("password");
+        String userIdRegex = "^[A-Z]{1}[a-z]{2,}$";
         if (userID.equals(user) && password.equals(pwd)) {
             request.setAttribute("user", user);
             request.getRequestDispatcher("LoginSuccess.jsp").forward(request, response);
+        } else if (!Pattern.matches(userIdRegex, user)) {
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+            PrintWriter out = response.getWriter();
+            out.println("<font color=red>User id is not proper. Please enter valid user id.</font>");
+            rd.include(request, response);
         } else {
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
             PrintWriter out = response.getWriter();
